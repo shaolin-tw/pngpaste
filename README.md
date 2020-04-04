@@ -6,41 +6,46 @@ Paste PNG into files on MacOS, much like `pbpaste` does for text.
 However instead of `pngpaste > thefile.png`, it's `pngpaste thefile.png`,
 so one does not accidentally barf binary into the console.
 
-### Motivation
+原始功能請參考原專案：https://github.com/jcsalterego/pngpaste
 
-[http://apple.stackexchange.com/q/11100/4795](http://apple.stackexchange.com/q/11100/4795)
+此版本加入新功能：背景將剪貼板中圖片轉為 PNG 格式。由於為特殊需求並不符合原專案用途，故未 merge 回去。
 
-### Build
+### 動機
 
-    $ make all
+在 macOS 環境中複製圖片（非複製圖片檔案），在剪貼板中都會是 TIFF 格式。這會讓貼上後的檔案大小變大數倍，造成空間浪費。例如下面的例子：
 
-### Installation
+1. 網頁看到圖片選右鍵「拷貝影像」
+      <img src="images/copy_image.png"/>
+2. 將圖片貼到 Pages 空白頁發現圖片格式為 TIFF，儲存後 Pages 檔案約 2.5MB
+      <img src="images/paste_as_tiff_format.png"/>
+3. 如果直接下載網頁中的圖，並拖拉到 Pages 空白頁儲存，檔案約 356KB，大小差了約 7 倍。
+      <img src="images/paste_original_image.png"/>
 
-From source:
+希望能背景將剪貼板中 TIFF 轉換成 PNG，貼上時直接就是 PNG 圖檔。
 
-    $ make all
-    $ sudo make install
+### 安裝
 
-Or with Homebrew:
+```
+$ make all
+$ make install
+```
 
-    $ brew install pngpaste
+### 使用方法
 
-### Usage
+```
+pngpaste -c
+```
+執行上述指令會將剪貼板中的圖片背景轉成 PNG 格式，直接 `Command-V` 就可以貼上圖片
 
-    $ pngpaste hooray.png
+### 進階使用
 
-### Bonus and Disclaimers
+搭配 [BetterTouchTool](https://folivora.ai/) 使用，設定一組快捷鍵會執行：
 
-Supported input formats are PNG, PDF, GIF, TIF, JPEG.
+1. pngpaste -c
+2. Command-V
 
-Supported output formats are PNG, GIF, JPEG, TIFF.
+例如：
 
-Output formats are determined by the provided filename extension,
-falling back to PNG.
+<img src="images/btt.png"/>
 
-It's unclear if EXIF data in JPEG sources are preserved. There's an
-issue with pasting into JPEG format from a GIF source.
-
-### Error Handling
-
-Minimal :'(
+往後複製圖片就可以直接按快捷鍵 `Option-Command-V` 貼上圖片了
