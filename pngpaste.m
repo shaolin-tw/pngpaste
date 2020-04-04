@@ -10,7 +10,8 @@ usage ()
     fprintf(stderr,
         "Usage: %s [OPTIONS] <dest.png>\n"
         "\t-v\t" "Version" "\n"
-        "\t-h,-?\t" "This usage" "\n",
+        "\t-h,-?\t" "This usage" "\n"
+        "\t-c\t" "Convert copied image to PNG format on the clipboard" "\n",
         APP_NAME);
 }
 
@@ -145,6 +146,22 @@ getPasteboardImageData (NSBitmapImageFileType bitmapImageFileType)
     return imageData;
 }
 
+BOOL copyToClipboard (NSString *path)
+{
+    NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
+    
+    NSURL *object = [[NSURL alloc] initFileURLWithPath:path];
+    [pasteBoard clearContents];
+    
+    NSArray *objectsToCopy = [[NSArray alloc] initWithObjects:object, nil];
+    BOOL pasted = [pasteBoard writeObjects:objectsToCopy];
+ 
+    [object release];
+    [objectsToCopy release];
+    
+    return pasted;
+}
+
 Parameters
 parseArguments (int argc, char* const argv[])
 {
@@ -155,12 +172,18 @@ parseArguments (int argc, char* const argv[])
     params.wantsUsage = NO;
     params.wantsStdout = NO;
     params.malformed = NO;
+    params.onlyCovert = NO;
 
     int ch;
-    while ((ch = getopt(argc, argv, "vh?")) != -1) {
+    while ((ch = getopt(argc, argv, "vch?")) != -1) {
         switch (ch) {
         case 'v':
             params.wantsVersion = YES;
+            return params;
+            break;
+        case 'c':
+            params.onlyCovert = YES;
+            params.outputFile = [[NSString alloc] initWithString:@"/tmp/pasted-image.png"];
             return params;
             break;
         case 'h':
@@ -219,6 +242,11 @@ main (int argc, char * const argv[])
             } else {
                 fatal("Could not write to file!");
                 exitCode = EXIT_FAILURE;
+            }
+        }
+        if (params.onlyCovert) {
+            if (copyToClipboard(@"/tmp/pasted-image.png")) {
+                exitCode = EXIT_SUCCESS;
             }
         }
     } else {

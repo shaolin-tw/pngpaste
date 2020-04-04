@@ -25,6 +25,7 @@ typedef struct parameters
     BOOL wantsUsage;
     BOOL wantsStdout;
     BOOL malformed;
+    BOOL onlyCovert;
 } Parameters;
 
 void usage ();
@@ -37,6 +38,7 @@ NSData *renderFromBitmap (NSImage *image, NSBitmapImageFileType bitmapImageFileT
 NSData *renderFromPDF (NSImage *image, NSBitmapImageFileType bitmapImageFileType);
 NSBitmapImageFileType getBitmapImageFileTypeFromFilename (NSString *filename);
 NSData *getPasteboardImageData (NSBitmapImageFileType bitmapImageFileType);
+BOOL copyToClipboard (NSString *path);
 
 Parameters parseArguments (int argc, char* const argv[]);
 
